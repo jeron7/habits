@@ -1,5 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { PlusIcon } from '@radix-ui/react-icons'
+import { PlusIcon, CheckIcon, Cross2Icon } from '@radix-ui/react-icons'
+
+import { HabitForm } from './HabitForm'
 
 import Logo from '../assets/logo.svg'
 
@@ -17,7 +19,17 @@ export function Header() {
                     Novo hábito
                 </Dialog.Trigger>
 
-                {/* TODO: Add Dialog.Portal with the form to add new habit */}
+                <Dialog.Portal>
+                    <Dialog.Overlay className='fixed inset-0 w-full h-full bg-black/80' />
+                    <Dialog.Content className='absolute top-1/2 left-1/2 w-full max-w-md h-fit bg-zinc-900 py-10 px-[39px] rounded-2xl -translate-x-1/2 -translate-y-1/2'>
+                        <Dialog.Close className='text-zinc-400 float-right'>
+                            <Cross2Icon className='w-6 h-6' aria-label='Fechar'/>
+                        </Dialog.Close>
+                        <Dialog.Title className='font-inter text-3xl text-white font-extrabold'>Criar hábito</Dialog.Title>
+                        
+                        <HabitForm />
+                    </Dialog.Content>
+                </Dialog.Portal>
             </Dialog.Root>
         </div>
     )
