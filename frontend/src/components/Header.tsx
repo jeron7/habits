@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import { PlusIcon, CheckIcon, Cross2Icon } from '@radix-ui/react-icons'
+import { PlusIcon, Cross2Icon } from '@radix-ui/react-icons'
 
 import { HabitForm } from './HabitForm'
 

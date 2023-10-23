@@ -1,12 +1,12 @@
 import { FormEvent, useState } from "react";
-import * as Checkbox from "@radix-ui/react-checkbox" 
-import { CheckIcon } from "@radix-ui/react-icons" 
+import * as Checkbox from "@radix-ui/react-checkbox"
+import { CheckIcon } from "@radix-ui/react-icons"
 
 const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
 
 export function HabitForm() {
 
-    const [title, setTitle] = useState("")
+    const [title, setTitle] = useState<string>("")
     const [weekDays, setWeekDays] = useState<number[]>([])
 
     function updateWeekDay(weekDay : number) {
@@ -28,9 +28,8 @@ export function HabitForm() {
 
         if (title && weekDays.length > 0) {
             console.log(habit)
-
             setTitle("")
-            setWeekDays([])  
+            setWeekDays([])
         }
       }
 
@@ -49,20 +48,23 @@ export function HabitForm() {
             <p className="font-inter text-white mt-3">Qual a recorrência?</p>
             {daysOfWeek.map((day, index) => {
                 return (
-                    <Checkbox.Root
-                        id={day}
-                        key={index}
-                        checked={weekDays.includes(index)}
-                        className="flex flex-row gap-3 items-center group"
-                        onCheckedChange={() => updateWeekDay(index)}
-                    >
-                        <div className="w-8 h-8 rounded-lg bg-zinc-900 border-2 border-zinc-800 flex justify-center items-center group-data-[state=checked]:bg-green-500 group-data-[state=checked]:border-0">
-                            <Checkbox.Indicator>
-                                <CheckIcon className="w-5 h-5 text-white" />
-                            </Checkbox.Indicator>
-                        </div>
+                    <div className="flex flex-row gap-3 items-center">
+                        <Checkbox.Root
+                            id={day}
+                            key={index}
+                            checked={weekDays.includes(index)}
+                            className="flex flex-row gap-3 items-center group"
+                            onCheckedChange={() => updateWeekDay(index)}
+                        >
+                            <div className="w-8 h-8 rounded-lg bg-zinc-900 border-2 border-zinc-800 flex justify-center items-center group-data-[state=checked]:bg-green-500 group-data-[state=checked]:border-0">
+                                <Checkbox.Indicator>
+                                    <CheckIcon className="w-5 h-5 text-white" />
+                                </Checkbox.Indicator>
+                            </div>
+                        </Checkbox.Root>
                         <label className="font-inter text-white" htmlFor={day}>{day}</label>
-                    </Checkbox.Root>
+                    </div>
+                    
                 )
             })}
             <button 
