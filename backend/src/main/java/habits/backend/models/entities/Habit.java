@@ -4,16 +4,17 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
-@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Habit {
 
     @Id
@@ -25,10 +26,23 @@ public class Habit {
 
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL)
-    private Set<WeeklyHabit> daysOfWeek;
+    @OneToMany(
+        mappedBy = "habit",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private Set<DayOfWeek> daysOfWeek;
 
-    @ManyToMany(mappedBy = "activities")
-    private Collection<Activity> activities;
+    @Builder
+    public Habit(UUID id, String title, Timestamp createdAt) {
+        this.id = id;
+        this.title = title;
+        this.createdAt = createdAt;
+        this.daysOfWeek = new HashSet<>();
+    }
 
+    public void addDayOfWeek(DayOfWeek dayOfWeek) {
+        this.daysOfWeek.add(dayOfWeek);
+        dayOfWeek.setHabit(this);
+    }
 }
