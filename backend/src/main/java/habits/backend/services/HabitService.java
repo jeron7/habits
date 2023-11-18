@@ -21,16 +21,19 @@ public class HabitService {
 
     private HabitRepository habitRepository;
 
-    public UUID createHabit(CreateHabitRequest request) {
+    public boolean exists(CreateHabitRequest request) {
+        Optional<Habit> habitOptional = habitRepository.findByTitle(request.title());
+        return habitOptional.isPresent();
+    }
+
+    public UUID create(CreateHabitRequest request) {
         Habit habit = Habit.builder()
-                .id(UUID.randomUUID())
                 .title(request.title())
                 .createdAt(Timestamp.from(Instant.now()))
                 .build();
 
-        for (Integer isoDayOfWeek : request.isoDaysOfWeek()) {
+        for (Integer isoDayOfWeek : request.daysOfWeek()) {
             DayOfWeek dayOfWeek = DayOfWeek.builder()
-                    .id(UUID.randomUUID())
                     .isoDayOfWeek(isoDayOfWeek)
                     .build();
             habit.addDayOfWeek(dayOfWeek);
@@ -41,7 +44,7 @@ public class HabitService {
         return createdHabit.getId();
     }
 
-    public HabitResponse getHabit(UUID id) {
+    public HabitResponse getById(UUID id) {
         Optional<Habit> optionalHabit = habitRepository.findById(id);
 
         if (optionalHabit.isEmpty())

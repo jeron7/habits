@@ -24,7 +24,7 @@ public class DayOfWeek {
     /*
         Day of week representation following ISO-8601 specification.
      */
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private int isoDayOfWeek;
 
     @ManyToOne(fetch = FetchType.LAZY)
