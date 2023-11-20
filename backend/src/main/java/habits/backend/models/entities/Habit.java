@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;

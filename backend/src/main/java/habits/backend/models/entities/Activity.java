@@ -3,7 +3,7 @@ package habits.backend.models.entities;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Activity {
 
     @Id
