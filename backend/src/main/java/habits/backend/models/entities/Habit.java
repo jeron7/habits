@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,7 +27,8 @@ public class Habit {
     @Column(nullable = false, unique = true)
     private String title;
 
-    private Timestamp createdAt;
+    @CreationTimestamp
+    private LocalDate createdAt;
 
     @OneToMany(
         mappedBy = "habit",
@@ -33,16 +37,32 @@ public class Habit {
     )
     private Set<DayOfWeek> daysOfWeek;
 
+    @ManyToMany(mappedBy = "habits")
+    private Set<Activity> activities;
+
     @Builder
-    public Habit(UUID id, String title, Timestamp createdAt) {
+    public Habit(UUID id, String title) {
         this.id = id;
         this.title = title;
-        this.createdAt = createdAt;
         this.daysOfWeek = new HashSet<>();
+        this.activities = new HashSet<>();
     }
 
     public void addDayOfWeek(DayOfWeek dayOfWeek) {
         this.daysOfWeek.add(dayOfWeek);
         dayOfWeek.setHabit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Habit habit = (Habit) o;
+        return Objects.equals(getId(), habit.getId()) && Objects.equals(getTitle(), habit.getTitle()) && Objects.equals(getCreatedAt(), habit.getCreatedAt());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTitle(), getCreatedAt());
     }
 }

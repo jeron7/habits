@@ -29,7 +29,6 @@ public class HabitService {
     public UUID create(CreateHabitRequest request) {
         Habit habit = Habit.builder()
                 .title(request.title())
-                .createdAt(Timestamp.from(Instant.now()))
                 .build();
 
         for (Integer isoDayOfWeek : request.daysOfWeek()) {

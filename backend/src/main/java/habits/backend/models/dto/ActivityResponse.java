@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Builder
-public record HabitResponse(
+public record ActivityResponse(
         UUID id,
-        String title,
         LocalDate createdAt,
-        List<Integer> daysOfWeek
+        LocalDate updatedAt,
+        List<UUID> habits
 ) {
 }

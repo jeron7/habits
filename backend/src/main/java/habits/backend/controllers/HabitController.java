@@ -1,6 +1,5 @@
 package habits.backend.controllers;
 
-import habits.backend.models.dto.ApiErrorResponse;
 import habits.backend.models.dto.CreateHabitRequest;
 import habits.backend.models.dto.HabitResponse;
 import habits.backend.services.HabitService;
@@ -11,11 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import static habits.backend.utils.ResponseEntityGenerator.buildGenericBadRequest;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 @RestController
@@ -26,11 +24,12 @@ public class HabitController {
     private HabitService habitService;
 
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<?> createHabit(@RequestBody @Valid CreateHabitRequest createHabitRequest) {
+    ResponseEntity<?> create(@RequestBody @Valid CreateHabitRequest createHabitRequest) {
         if (habitService.exists(createHabitRequest)) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put("title", "habit with title " + createHabitRequest.title() + " already exists.");
-            return ResponseEntity.badRequest().body(new ApiErrorResponse("Duplicated habit being requested.", errors));
+            return buildGenericBadRequest(
+                    "Duplicated habit being requested.",
+                    "habit with title " + createHabitRequest.title() + " already exists."
+            );
         }
 
         UUID createdId = habitService.create(createHabitRequest);
@@ -39,7 +38,7 @@ public class HabitController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<HabitResponse> getHabit(@PathVariable UUID id) {
+    ResponseEntity<HabitResponse> getById(@PathVariable UUID id) {
         HabitResponse habitResponse = habitService.getById(id);
 
         if (Objects.isNull(habitResponse))
