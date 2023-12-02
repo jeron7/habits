@@ -4,12 +4,17 @@ import habits.backend.models.dto.CreateHabitRequest;
 import habits.backend.models.dto.HabitResponse;
 import habits.backend.services.HabitService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -44,5 +49,14 @@ public class HabitController {
         if (Objects.isNull(habitResponse))
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(habitResponse);
+    }
+
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<HabitResponse>> filterByDaysOfWeek(
+            @RequestParam @UniqueElements @Size(min = 1, max = 7) List<@Min(1) @Max(7) Integer> daysOfWeek
+    ) {
+        List<HabitResponse> habitResponses = habitService.filterByDaysOfWeek(daysOfWeek);
+
+        return ResponseEntity.ok(habitResponses);
     }
 }

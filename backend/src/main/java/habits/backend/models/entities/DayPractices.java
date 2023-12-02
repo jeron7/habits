@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class Activity {
+public class DayPractices implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,34 +29,31 @@ public class Activity {
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
-        joinColumns = @JoinColumn(name = "activity_id"),
-        inverseJoinColumns = @JoinColumn(name = "habit_id")
+            joinColumns = @JoinColumn(name = "activity_id"),
+            inverseJoinColumns = @JoinColumn(name = "habit_id")
     )
     private Set<Habit> habits;
 
     @Builder
-    public Activity(UUID id, LocalDate createdAt, LocalDate updatedAt) {
+    public DayPractices(UUID id, LocalDate createdAt, LocalDate updatedAt) {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.habits = new HashSet<>();
     }
 
-    public void addHabit(Habit habit) {
+    public boolean containsHabit(UUID habitId) {
+        return habits.stream()
+                .anyMatch(habit -> habit.getId().equals(habitId));
+    }
+
+    public void add(Habit habit) {
         this.habits.add(habit);
-        habit.getActivities().add(this);
+        habit.getDayPractices().add(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Activity activity = (Activity) o;
-        return Objects.equals(getId(), activity.getId()) && Objects.equals(getCreatedAt(), activity.getCreatedAt()) && Objects.equals(getUpdatedAt(), activity.getUpdatedAt());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getCreatedAt(), getUpdatedAt());
+    public void remove(Habit habit) {
+        this.habits.remove(habit);
+        habit.getDayPractices().remove(this);
     }
 }

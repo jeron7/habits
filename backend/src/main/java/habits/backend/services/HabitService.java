@@ -5,6 +5,7 @@ import habits.backend.models.dto.HabitResponse;
 import habits.backend.models.entities.DayOfWeek;
 import habits.backend.models.entities.Habit;
 import habits.backend.repository.HabitRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class HabitService {
         return createdHabit.getId();
     }
 
+    @Transactional
     public HabitResponse getById(UUID id) {
         Optional<Habit> optionalHabit = habitRepository.findById(id);
 
@@ -60,5 +62,9 @@ public class HabitService {
                 .createdAt(habit.getCreatedAt())
                 .daysOfWeek(daysOfWeek)
                 .build();
+    }
+
+    public List<HabitResponse> filterByDaysOfWeek(List<Integer> daysOfWeek) {
+        return null;
     }
 }

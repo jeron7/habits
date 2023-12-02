@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Builder
-public record CreateActivityRequest(
+public record CreateDayRequest(
         @NotNull LocalDate createdAt,
         @NotEmpty List<UUID> habits
 ) {

@@ -1,5 +1,7 @@
 package habits.backend.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import habits.backend.utils.LocalDateUtils;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
@@ -17,7 +20,7 @@ import java.util.UUID;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Habit {
+public class Habit implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,6 +32,7 @@ public class Habit {
     @CreationTimestamp
     private LocalDate createdAt;
 
+    @JsonManagedReference
     @OneToMany(
         mappedBy = "habit",
         cascade = CascadeType.ALL,
@@ -37,19 +41,25 @@ public class Habit {
     private Set<DayOfWeek> daysOfWeek;
 
     @ManyToMany(mappedBy = "habits")
-    private Set<Activity> activities;
+    private Set<DayPractices> dayPractices;
 
     @Builder
     public Habit(UUID id, String title) {
         this.id = id;
         this.title = title;
         this.daysOfWeek = new HashSet<>();
-        this.activities = new HashSet<>();
+        this.dayPractices = new HashSet<>();
     }
 
     public void addDayOfWeek(DayOfWeek dayOfWeek) {
         this.daysOfWeek.add(dayOfWeek);
         dayOfWeek.setHabit(this);
+    }
+
+    public boolean isPracticableAtDate(LocalDate date) {
+        int createAtDayOfWeek = LocalDateUtils.getDayOfWeek(date);
+        return this.getDaysOfWeek().stream()
+                .anyMatch(dayOfWeek -> dayOfWeek.getIsoDayOfWeek() == createAtDayOfWeek);
     }
 
     @Override
