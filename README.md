@@ -16,7 +16,7 @@ Na REST API foram desenvolvidos os seguintes endpoints:
 
 - ```POST /habits/``` criação de um hábito, informando detalhes do titulo e dias que se espera que este ele seja repetido.
 - ```GET /habits/:id``` recuperar informações de um hábito a partir de seu id.
-- ```GET /habits/?daysOfWeek``` filtrar hábitos que são praticados nos dias da semana informados.
+- ```GET /habits/?daysOfWeek``` recuperar todos os hábitos ou filtrá-los pelos dias da semana em que são praticados.
 - ```POST /days/``` registro dos habitos realizados em um dia.
 - ```GET /days/:id``` recuperar informações dos habitos práticados em um dia com pelo id.
 - ```PUT /days/:id``` atualiza os habitos realizados em um dia.

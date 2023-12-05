@@ -51,12 +51,15 @@ public class HabitController {
         return ResponseEntity.ok(habitResponse);
     }
 
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<HabitResponse>> filterByDaysOfWeek(
-            @RequestParam @UniqueElements @Size(min = 1, max = 7) List<@Min(1) @Max(7) Integer> daysOfWeek
-    ) {
-        List<HabitResponse> habitResponses = habitService.filterByDaysOfWeek(daysOfWeek);
 
-        return ResponseEntity.ok(habitResponses);
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<HabitResponse>> getAll(
+            @RequestParam(required = false) @UniqueElements @Size(min = 1, max = 7) List<@Min(1) @Max(7) Integer> daysOfWeek
+    ) {
+        if (Objects.isNull(daysOfWeek)) {
+            return ResponseEntity.ok(habitService.findAll());
+        } else {
+            return ResponseEntity.ok(habitService.filterByDaysOfWeek(daysOfWeek));
+        }
     }
 }

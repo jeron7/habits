@@ -10,8 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,20 +49,22 @@ public class HabitService {
         if (optionalHabit.isEmpty())
             return null;
 
-        Habit habit = optionalHabit.get();
-        List<Integer> daysOfWeek = habit.getDaysOfWeek().stream()
-                .map(DayOfWeek::getIsoDayOfWeek)
-                .toList();
-
-        return HabitResponse.builder()
-                .id(habit.getId())
-                .title(habit.getTitle())
-                .createdAt(habit.getCreatedAt())
-                .daysOfWeek(daysOfWeek)
-                .build();
+        return HabitResponse.from(optionalHabit.get());
     }
 
     public List<HabitResponse> filterByDaysOfWeek(List<Integer> daysOfWeek) {
-        return null;
+        List<Habit> habits = habitRepository.findByDaysOfWeek(daysOfWeek);
+
+        return habits.stream()
+                .map(HabitResponse::from)
+                .toList();
+    }
+
+    public List<HabitResponse> findAll() {
+        List<Habit> habits = habitRepository.findAll();
+
+        return habits.stream()
+                .map(HabitResponse::from)
+                .toList();
     }
 }
