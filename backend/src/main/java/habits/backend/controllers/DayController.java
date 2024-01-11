@@ -19,6 +19,7 @@ import java.util.UUID;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 @RestController
+@CrossOrigin(maxAge = 3600)
 @RequestMapping(value = "/days")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class DayController {

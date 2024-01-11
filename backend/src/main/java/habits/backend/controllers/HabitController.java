@@ -22,6 +22,7 @@ import static habits.backend.utils.ResponseEntityGenerator.buildGenericBadReques
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 @RestController
+@CrossOrigin(maxAge = 3600)
 @RequestMapping(value = "/habits")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class HabitController {
