@@ -1,9 +1,43 @@
-import { Habit } from './Habit' 
+import { useEffect, useState } from 'react'
+
+import { DailyActivity } from './DailyActivity'
+import { Activity, summarizeDaysActivities } from '../hooks/summarizeDaysActivities'
+import { getDatesBetween, getNDaysAgo } from '../utils/dateUtils'
+import { HabitWithoutDaysOfWeek, summarizeHabits } from '../hooks/summarizeHabits'
 
 const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"]
-const habits = Array((35 * 4)).fill(6)
 
 export function Heatmap() {
+
+    const { habitsMappedByDayOfWeek } = summarizeHabits();
+    const { summary } = summarizeDaysActivities()
+    const [filledSummary, setFilledSummary] = useState<Activity[]>([]);
+
+    const fillSummary = async () => {
+        const ends = new Date()
+        const starts = getNDaysAgo(ends, ends.getUTCDay() + 7 * 17)
+        const filledSummary : Activity[] = getDatesBetween(starts, ends).map(date => {
+            const createdAt = date.toISOString().slice(0, 10);
+
+            const activity = summary.find(activity => activity.createdAt == createdAt)
+            if (activity) return activity
+
+            const dayOfWeek = date.getUTCDay();
+            return {
+                id: "", 
+                createdAt, 
+                updatedAt: null, 
+                practicedHabits: new Array<HabitWithoutDaysOfWeek>(),
+                notPracticedHabits : habitsMappedByDayOfWeek[dayOfWeek]
+            }
+        })
+
+        console.log(filledSummary)
+
+        setFilledSummary(filledSummary)
+    }
+
+    useEffect(() => { fillSummary() }, [summary])
     
     return (
         <div className="flex flex-row gap-3">
@@ -21,9 +55,12 @@ export function Heatmap() {
             </div>
             <div className="grid grid-rows-7 grid-flow-col gap-2">
                 {
-                    habits.map((habit, index) => {
+                    filledSummary.map((activity, index) => {
                         return (
-                            <Habit key={index} completed={index % habit} amount={6}/>
+                            <DailyActivity 
+                                key={index}
+                                activity={activity}
+                            />
                         )
                     })
                 }
